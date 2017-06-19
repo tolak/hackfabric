@@ -9,7 +9,7 @@
 #set -e
 
 CHANNEL_NAME=$1
-: ${CHANNEL_NAME:="mychannel"}
+: ${CHANNEL_NAME:="AssetAtom"}
 echo $CHANNEL_NAME
 
 export FABRIC_ROOT=$PWD/../..
@@ -21,23 +21,23 @@ OS_ARCH=$(echo "$(uname -s|tr '[:upper:]' '[:lower:]'|sed 's/mingw64_nt.*/window
 ## Using docker-compose template replace private key file names with constants
 function replacePrivateKey () {
 	ARCH=`uname -s | grep Darwin`
-	if [ "$ARCH" == "Darwin" ]; then
-		OPTS="-it"
-	else
-		OPTS="-i"
-	fi
-
-	cp docker-compose-e2e-template.yaml docker-compose-e2e.yaml
-
-        CURRENT_DIR=$PWD
-        cd crypto-config/peerOrganizations/org1.example.com/ca/
-        PRIV_KEY=$(ls *_sk)
-        cd $CURRENT_DIR
-        sed $OPTS "s/CA1_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose-e2e.yaml
-        cd crypto-config/peerOrganizations/org2.example.com/ca/
-        PRIV_KEY=$(ls *_sk)
-        cd $CURRENT_DIR
-        sed $OPTS "s/CA2_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose-e2e.yaml
+#	if [ "$ARCH" == "Darwin" ]; then
+#		OPTS="-it"
+#	else
+#		OPTS="-i"
+#	fi
+#
+#	cp docker-compose-e2e-template.yaml docker-compose-e2e.yaml
+#
+#        CURRENT_DIR=$PWD
+#        cd crypto-config/peerOrganizations/org1.example.com/ca/
+#        PRIV_KEY=$(ls *_sk)
+#        cd $CURRENT_DIR
+#        sed $OPTS "s/CA1_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose-e2e.yaml
+#        cd crypto-config/peerOrganizations/org2.example.com/ca/
+#        PRIV_KEY=$(ls *_sk)
+#        cd $CURRENT_DIR
+#        sed $OPTS "s/CA2_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose-e2e.yaml
 }
 
 ## Generates Org certs using cryptogen tool
@@ -75,29 +75,36 @@ function generateChannelArtifacts() {
 	echo "##########################################################"
 	# Note: For some unknown reason (at least for now) the block file can't be
 	# named orderer.genesis.block or the orderer will fail to launch!
-	$CONFIGTXGEN -profile TwoOrgsOrdererGenesis -outputBlock ./channel-artifacts/genesis.block
+	$CONFIGTXGEN -profile OrgsOrdererGenesis -outputBlock ./channel-artifacts/genesis.block
 
 	echo
 	echo "#################################################################"
 	echo "### Generating channel configuration transaction 'channel.tx' ###"
 	echo "#################################################################"
-	$CONFIGTXGEN -profile TwoOrgsChannel -outputCreateChannelTx ./channel-artifacts/channel.tx -channelID $CHANNEL_NAME
+	$CONFIGTXGEN -profile OrgsChannel -outputCreateChannelTx ./channel-artifacts/channel.tx -channelID $CHANNEL_NAME
 
 	echo
 	echo "#################################################################"
-	echo "#######    Generating anchor peer update for Org1MSP   ##########"
+	echo "#######    Generating anchor peer update for AssetCollectorOrgMSP   ##########"
 	echo "#################################################################"
-	$CONFIGTXGEN -profile TwoOrgsChannel -outputAnchorPeersUpdate ./channel-artifacts/Org1MSPanchors.tx -channelID $CHANNEL_NAME -asOrg Org1MSP
+	$CONFIGTXGEN -profile OrgsChannel -outputAnchorPeersUpdate ./channel-artifacts/AssetCollectorOrgMSPanchors.tx -channelID $CHANNEL_NAME -asOrg AssetCollectorOrgMSP
 
 	echo
 	echo "#################################################################"
-	echo "#######    Generating anchor peer update for Org2MSP   ##########"
+	echo "#######    Generating anchor peer update for AssetProviderOrgMSP   ##########"
 	echo "#################################################################"
-	$CONFIGTXGEN -profile TwoOrgsChannel -outputAnchorPeersUpdate ./channel-artifacts/Org2MSPanchors.tx -channelID $CHANNEL_NAME -asOrg Org2MSP
+	$CONFIGTXGEN -profile OrgsChannel -outputAnchorPeersUpdate ./channel-artifacts/AssetProviderOrgMSPanchors.tx -channelID $CHANNEL_NAME -asOrg AssetProviderOrgMSP
+	echo
+
+	echo
+	echo "#################################################################"
+	echo "#######    Generating anchor peer update for AssetManagerOrgMSP   ##########"
+	echo "#################################################################"
+	$CONFIGTXGEN -profile OrgsChannel -outputAnchorPeersUpdate ./channel-artifacts/AssetManagerOrgMSPPanchors.tx -channelID $CHANNEL_NAME -asOrg AssetManagerOrgMSP
 	echo
 }
 
 generateCerts
-replacePrivateKey
+#replacePrivateKey
 generateChannelArtifacts
 

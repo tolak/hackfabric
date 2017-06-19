@@ -13,29 +13,41 @@ services:
       service: orderer.example.com
     container_name: orderer.example.com
 
-  peer0.org1.example.com:
-    container_name: peer0.org1.example.com
+  peer0.assetCollectorOrg.example.com:
+    container_name: peer0.assetCollectorOrg.example.com
     extends:
       file:  base/docker-compose-base.yaml
-      service: peer0.org1.example.com
+      service: peer0.assetCollectorOrg.example.com
 
-  peer1.org1.example.com:
-    container_name: peer1.org1.example.com
+  peer1.assetCollectorOrg.example.com:
+    container_name: peer1.assetCollectorOrg.example.com
     extends:
       file:  base/docker-compose-base.yaml
-      service: peer1.org1.example.com
+      service: peer1.assetCollectorOrg.example.com
 
-  peer0.org2.example.com:
-    container_name: peer0.org2.example.com
+  peer0.assetProviderOrg.example.com:
+    container_name: peer0.assetProviderOrg.example.com
     extends:
       file:  base/docker-compose-base.yaml
-      service: peer0.org2.example.com
+      service: peer0.assetProviderOrg.example.com
 
-  peer1.org2.example.com:
-    container_name: peer1.org2.example.com
+  peer1.assetProviderOrg.example.com:
+    container_name: peer1.assetProviderOrg.example.com
     extends:
       file:  base/docker-compose-base.yaml
-      service: peer1.org2.example.com
+      service: peer1.assetProviderOrg.example.com
+      
+  peer0.assetManagerOrg.example.com:
+    container_name: peer0.assetManagerOrg.example.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer0.assetManagerOrg.example.com
+
+  peer1.assetManagerOrg.example.com:
+    container_name: peer1.assetManagerOrg.example.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer1.assetManagerOrg.example.com
 
   cli:
     container_name: cli
@@ -63,7 +75,9 @@ services:
         - ./channel-artifacts:/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts
     depends_on:
       - orderer.example.com
-      - peer0.org1.example.com
-      - peer1.org1.example.com
-      - peer0.org2.example.com
-      - peer1.org2.example.com
+      - peer0.assetCollectorOrg.example.com
+      - peer1.assetCollectorOrg.example.com
+      - peer0.assetProviderOrg.example.com
+      - peer1.assetProviderOrg.example.com
+      - peer0.assetManagerOrg.example.com
+      - peer1.assetManagerOrg.example.com

@@ -24,8 +24,8 @@ PeerOrgs:
   # ---------------------------------------------------------------------------
   # Org1
   # ---------------------------------------------------------------------------
-  - Name: Org1
-    Domain: org1.example.com
+  - Name: assetCollectorOrg
+    Domain: assetCollectorOrg.example.com
     # ---------------------------------------------------------------------------
     # "Specs"
     # ---------------------------------------------------------------------------
@@ -73,8 +73,15 @@ PeerOrgs:
   # ---------------------------------------------------------------------------
   # Org2: See "Org1" for full specification
   # ---------------------------------------------------------------------------
-  - Name: Org2
-    Domain: org2.example.com
+  - Name: assetProviderOrg
+    Domain: assetProviderOrg.example.com
+    Template:
+      Count: 2
+    Users:
+      Count: 1
+
+  - Name: assetManagerOrg
+    Domain: assetManagerOrg.example.com
     Template:
       Count: 2
     Users:
