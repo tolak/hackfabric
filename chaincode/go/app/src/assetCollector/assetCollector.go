@@ -27,7 +27,7 @@ func (t *assetCollectorChaincode) Invoke(stub shim.ChaincodeStubInterface) pb.Re
 	return shim.Error("Invalid invoke function name.")
 }
 
-//user lend it's asset to others
+//user lend its asset to others
 //args[0]: the one would lend the asset
 //args[1]: the one(generally a trusted org or "public") would receive this asset. default "public"
 //args[2]: the amount of the asset that would be lend
