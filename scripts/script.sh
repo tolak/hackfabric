@@ -89,10 +89,16 @@ joinChannel () {
     echo
 }
 
-#installChaincode <org> <peer>
+#installChaincode <org> <peer> <ccname> <path>
 installChaincode () {
 	setGlobals $1 $2
-	peer chaincode install -n mycc -v 1.0 -p github.com/hyperledger/fabric/examples/chaincode/go/chaincode_example02 >&log.txt
+
+	ccname="$3"
+    : ${ccname:="$2-$1-chaincode"}
+    ccpath="$4"
+    : ${ccpath:="github.com/hyperledger/fabric/examples/chaincode/go/chaincode_example02"}
+
+	peer chaincode install -n $ccname -v 1.0 -p  $ccpath >&log.txt
 	res=$?
 	cat log.txt
         verifyResult $res "Chaincode installation on remote peer PEER$2.$1 has Failed"
@@ -100,15 +106,20 @@ installChaincode () {
 	echo
 }
 
-#instantiateChaincode <org> <peer>
+#instantiateChaincode <org> <peer> <ccname> <orgs>
 instantiateChaincode () {
 	setGlobals $1 $2
+	ccname="$3"
+    : ${ccname:="$2-$1-chaincode"}
+    ccorgs="$4"
+    : ${ccorgs:='{"Args":["init","a","0","b","0"]}'} #by default, we always run chaincode_example02.go
+
 	# while 'peer chaincode' command can get the orderer endpoint from the peer (if join was successful),
 	# lets supply it directly as we know it using the "-o" option
 	if [ -z "$CORE_PEER_TLS_ENABLED" -o "$CORE_PEER_TLS_ENABLED" = "false" ]; then
-		peer chaincode instantiate -o orderer.example.com:7050 -C $CHANNEL_NAME -n mycc -v 1.0 -c '{"Args":["init","a","100","b","200"]}' -P "OR	('AssetProviderOrg.member','AssetProviderOrg.member')" >&log.txt
+		peer chaincode instantiate -o orderer.example.com:7050 -C $CHANNEL_NAME -n $ccname -v 1.0 -c $ccorgs -P "OR	('AssetManagerOrg.member','AssetProviderOrg.member','AssetProviderOrg.member')" >&log.txt
 	else
-		peer chaincode instantiate -o orderer.example.com:7050 --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n mycc -v 1.0 -c '{"Args":["init","a","100","b","200"]}' -P "OR	('AssetCollectorOrg.member','AssetProviderOrg.member')" >&log.txt
+		peer chaincode instantiate -o orderer.example.com:7050 --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n $ccname -v 1.0 -c $ccorgs -P "OR	('AssetManagerOrg.member','AssetCollectorOrg.member','AssetProviderOrg.member')" >&log.txt
 	fi
 	res=$?
 	cat log.txt
@@ -117,44 +128,48 @@ instantiateChaincode () {
 	echo
 }
 
-#chaincodeQuery <org> <peer> <value>
+#chaincodeQuery <org> <peer> <ccname> <orgs>
 chaincodeQuery () {
-  echo "===================== Querying on PEER$2.$1 on channel '$CHANNEL_NAME'... ===================== "
-  setGlobals $1 $2
-  local rc=1
-  local starttime=$(date +%s)
+    echo "===================== Querying on PEER$2.$1 on channel '$CHANNEL_NAME'... ===================== "
+    setGlobals $1 $2
 
-  # continue to poll
-  # we either get a successful response, or reach TIMEOUT
-  while test "$(($(date +%s)-starttime))" -lt "$TIMEOUT" -a $rc -ne 0
-  do
-     sleep 3
-     echo "Attempting to Query PEER$2.$1 ...$(($(date +%s)-starttime)) secs"
-     peer chaincode query -C $CHANNEL_NAME -n mycc -c '{"Args":["query","a"]}' >&log.txt
-     test $? -eq 0 && VALUE=$(cat log.txt | awk '/Query Result/ {print $NF}')
-     test "$VALUE" = "$3" && let rc=0
-  done
-  echo
-  cat log.txt
-  if test $rc -eq 0 ; then
-	echo "===================== Query on PEER$2.$1 on channel '$CHANNEL_NAME' is successful ===================== "
-  else
-	echo "!!!!!!!!!!!!!!! Query result on PEER$2.$1 is INVALID !!!!!!!!!!!!!!!!"
-        echo "================== ERROR !!! FAILED to execute AssetAtom Scenario =================="
-	echo
-	exit 1
-  fi
+    ccname="$3"
+    : ${ccname:="$2-$1-chaincode"}
+    ccorgs="$4"
+    : ${ccorgs:='{"Args":["query","a"]}'} #by default, we always run chaincode_example02.go
+
+    local starttime=$(date +%s)
+
+    # continue to poll
+    # we either get a successful response, or reach TIMEOUT
+    while test "$(($(date +%s)-starttime))" -lt "$TIMEOUT" -a $rc -ne 0
+    do
+        sleep 3
+        echo "Attempting to Query PEER$2.$1 ...$(($(date +%s)-starttime)) secs"
+        peer chaincode query -C $CHANNEL_NAME -n $ccname -c $ccorgs >&log.txt
+        test $? -eq 0 && VALUE=$(cat log.txt | awk '/Query Result/ {print $NF}')
+        echo "Query Result: "
+        echo "==> $VALUE"
+        echo "======================Querying on PEER$2.$1 on channel '$CHANNEL_NAME' end ======================"
+    done
+
 }
 
-#chaincodeInvoke <org> <peer>
+#chaincodeInvoke <org> <peer> <ccname> <orgs>
 chaincodeInvoke () {
 	setGlobals $1 $2
+
+	ccname="$3"
+    : ${ccname:="$2-$1-chaincode"}
+    ccorgs="$4"
+    : ${ccorgs:='{"Args":["invoke","a","b","10"]}'} #by default, we always run chaincode_example02.go
+
 	# while 'peer chaincode' command can get the orderer endpoint from the peer (if join was successful),
 	# lets supply it directly as we know it using the "-o" option
 	if [ -z "$CORE_PEER_TLS_ENABLED" -o "$CORE_PEER_TLS_ENABLED" = "false" ]; then
-		peer chaincode invoke -o orderer.example.com:7050 -C $CHANNEL_NAME -n mycc -c '{"Args":["invoke","a","b","10"]}' >&log.txt
+		peer chaincode invoke -o orderer.example.com:7050 -C $CHANNEL_NAME -n $ccname -c $ccorgs >&log.txt
 	else
-		peer chaincode invoke -o orderer.example.com:7050  --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n mycc -c '{"Args":["invoke","a","b","10"]}' >&log.txt
+		peer chaincode invoke -o orderer.example.com:7050  --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n $ccname -c $ccorgs >&log.txt
 	fi
 	res=$?
 	cat log.txt
@@ -168,40 +183,32 @@ echo "Creating channel...as default"
 createChannel
 
 ## Join all the peers to the channel
-echo "Having peer0.assetManagerOrg join the channel..."
+echo "Having all peers join the channel..."
 joinChannel "assetManagerOrg" "peer0"
 joinChannel "assetManagerOrg" "peer1"
+joinChannel "assetCollectorOrg" "peer0"
+joinChannel "assetCollectorOrg" "peer1"
+joinChannel "assetProviderOrg" "peer0"
+joinChannel "assetProviderOrg" "peer1"
 
-## Set the peer0 as anchor peers for assetManagerOrg in the channel
+## Set the peer0 as anchor peers for its Org in the channel
 updateAnchorPeers "assetManagerOrg" "peer0"
+updateAnchorPeers "assetCollectorOrg" "peer0"
+updateAnchorPeers "assetProviderOrg" "peer0"
 
-## Install chaincode on peer0.assetManagerOrg and peer1.assetManagerOrg
-installChaincode "assetManagerOrg" "peer0"
-installChaincode "assetManagerOrg" "peer1"
+## Install chaincode on peer1 within all Org in the channel
+installChaincode "assetManagerOrg" "peer1" "peer0-assetmanager-cc" "github.com/hyperledger/fabric/examples/chaincode/go/app/src/assetManager"
+installChaincode "assetCollectorOrg" "peer1" "peer1-assetcollector-cc" "github.com/hyperledger/fabric/examples/chaincode/go/app/src/assetCollector"
+installChaincode "assetProviderOrg" "peer1" "peer1-assetprovider-cc" "github.com/hyperledger/fabric/examples/chaincode/go/app/src/assetProvider"
 
-#
-##Instantiate chaincode on Peer2/Org2
-#echo "Instantiating chaincode on org2/peer2..."
-#instantiateChaincode 2
-#
-##Query on chaincode on Peer0/Org1
-#echo "Querying chaincode on org1/peer0..."
-#chaincodeQuery 0 100
-#
-##Invoke on chaincode on Peer0/Org1
-#echo "Sending invoke transaction on org1/peer0..."
-#chaincodeInvoke 0
-#
-### Install chaincode on Peer3/Org2
-#echo "Installing chaincode on org2/peer3..."
-#installChaincode 3
-#
-##Query on chaincode on Peer3/Org2, check if the result is 90
-#echo "Querying chaincode on org2/peer3..."
-#chaincodeQuery 3 90
+
+#Instantiate chaincode on Peer1 within all Org in the channel
+instantiateChaincode "assetManagerOrg" "peer1" "peer0-assetmanager-cc" ""
+instantiateChaincode "assetCollectorOrg" "peer1" "peer1-assetcollector-cc" ""
+instantiateChaincode "assetProviderOrg" "peer1" "peer1-assetprovider-cc" ""
 
 echo
-echo "===================== All GOOD, AssetAtom execution completed ===================== " >&log.txt
+echo "===================== All GOOD, AssetAtom config completed ===================== " >&log.txt
 echo
 
 
