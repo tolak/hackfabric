@@ -12,6 +12,18 @@ services:
       file:   base/docker-compose-base.yaml
       service: orderer.example.com
     container_name: orderer.example.com
+      
+  peer0.assetManagerOrg.example.com:
+    container_name: peer0.assetManagerOrg.example.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer0.assetManagerOrg.example.com
+
+  peer1.assetManagerOrg.example.com:
+    container_name: peer1.assetManagerOrg.example.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer1.assetManagerOrg.example.com
 
   peer0.assetCollectorOrg.example.com:
     container_name: peer0.assetCollectorOrg.example.com
@@ -36,18 +48,6 @@ services:
     extends:
       file:  base/docker-compose-base.yaml
       service: peer1.assetProviderOrg.example.com
-      
-  peer0.assetManagerOrg.example.com:
-    container_name: peer0.assetManagerOrg.example.com
-    extends:
-      file:  base/docker-compose-base.yaml
-      service: peer0.assetManagerOrg.example.com
-
-  peer1.assetManagerOrg.example.com:
-    container_name: peer1.assetManagerOrg.example.com
-    extends:
-      file:  base/docker-compose-base.yaml
-      service: peer1.assetManagerOrg.example.com
 
   cli:
     container_name: cli
@@ -58,13 +58,13 @@ services:
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
       - CORE_LOGGING_LEVEL=DEBUG
       - CORE_PEER_ID=cli
-      - CORE_PEER_ADDRESS=peer1.AssetManagerOrg.example.com:7051
-      - CORE_PEER_LOCALMSPID=AssetManagerOrgMSP
+      - CORE_PEER_ADDRESS=peer0.assetManagerOrg.example.com:7051
+      - CORE_PEER_LOCALMSPID=assetManagerOrgMSP
       - CORE_PEER_TLS_ENABLED=true
-      - CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/AssetManagerOrg.example.com/peers/peer1.AssetManagerOrg.example.com/tls/server.crt
-      - CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/AssetManagerOrg.example.com/peers/peer1.AssetManagerOrg.example.com/tls/server.key
-      - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/AssetManagerOrg.example.com/peers/peer1.AssetManagerOrg.example.com/tls/ca.crt
-      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/AssetManagerOrg.example.com/users/Admin@AssetManagerOrg.example.com/msp
+      - CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/assetManagerOrg.example.com/peers/peer0.assetManagerOrg.example.com/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/assetManagerOrg.example.com/peers/peer0.assetManagerOrg.example.com/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/assetManagerOrg.example.com/peers/peer0.assetManagerOrg.example.com/tls/ca.crt
+      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/assetManagerOrg.example.com/users/Admin@assetManagerOrg.example.com/msp
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
     command: /bin/bash -c './scripts/script.sh ${CHANNEL_NAME}; sleep $TIMEOUT'
     volumes:
