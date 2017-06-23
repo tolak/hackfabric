@@ -24,8 +24,14 @@ setGlobals () {
     : ${ORG:="assetManagerOrg"}
     PEER="$2"
     : ${PEER:="peer0"}
-    CORE_PEER_LOCALMSPID=${ORG}
-    CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/${ORG}.example.com/peers/peer0.${ORG}.example.com/tls/ca.crt
+    if [ "$ORG" = "assetManagerOrg" ];then
+        CORE_PEER_LOCALMSPID="AssetManagerOrgMSP"
+    elif [ "$ORG" = "assetCollectorOrg" ];then
+        CORE_PEER_LOCALMSPID="AssetCollectorOrgMSP"
+    else
+        CORE_PEER_LOCALMSPID="AssetProviderOrgMSP"
+    fi
+    CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/${ORG}.example.com/peers/${PEER}.${ORG}.example.com/tls/ca.crt
     CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/${ORG}.example.com/users/Admin@${ORG}.example.com/msp
     CORE_PEER_ADDRESS=${PEER}.${ORG}.example.com:7051
 

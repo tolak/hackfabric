@@ -40,7 +40,7 @@ services:
       - CORE_PEER_ID=peer0.assetManagerOrg.example.com
       - CORE_PEER_ADDRESS=peer0.assetManagerOrg.example.com:7051
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.assetManagerOrg.example.com:7051
-      - CORE_PEER_LOCALMSPID=assetManagerOrgMSP
+      - CORE_PEER_LOCALMSPID=AssetManagerOrgMSP
     volumes:
         - /var/run/:/host/var/run/
         - ../crypto-config/peerOrganizations/assetManagerOrg.example.com/peers/peer0.assetManagerOrg.example.com/msp:/etc/hyperledger/fabric/msp
@@ -59,7 +59,7 @@ services:
       - CORE_PEER_ADDRESS=peer1.assetManagerOrg.example.com:7051
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.assetManagerOrg.example.com:7051
       - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.assetManagerOrg.example.com:7051
-      - CORE_PEER_LOCALMSPID=assetManagerOrgMSP
+      - CORE_PEER_LOCALMSPID=AssetManagerOrgMSP
     volumes:
         - /var/run/:/host/var/run/
         - ../crypto-config/peerOrganizations/assetManagerOrg.example.com/peers/peer1.assetManagerOrg.example.com/msp:/etc/hyperledger/fabric/msp
@@ -78,7 +78,7 @@ services:
       - CORE_PEER_ADDRESS=peer0.assetCollectorOrg.example.com:7051
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.assetCollectorOrg.example.com:7051
       - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.assetCollectorOrg.example.com:7051
-      - CORE_PEER_LOCALMSPID=assetCollectorOrgMSP
+      - CORE_PEER_LOCALMSPID=AssetCollectorOrgMSP
     volumes:
         - /var/run/:/host/var/run/
         - ../crypto-config/peerOrganizations/assetCollectorOrg.example.com/peers/peer0.assetCollectorOrg.example.com/msp:/etc/hyperledger/fabric/msp
@@ -97,7 +97,7 @@ services:
       - CORE_PEER_ADDRESS=peer1.assetCollectorOrg.example.com:7051
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.assetCollectorOrg.example.com:7051
       - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.assetCollectorOrg.example.com:7051
-      - CORE_PEER_LOCALMSPID=assetCollectorOrgMSP
+      - CORE_PEER_LOCALMSPID=AssetCollectorOrgMSP
     volumes:
         - /var/run/:/host/var/run/
         - ../crypto-config/peerOrganizations/assetCollectorOrg.example.com/peers/peer1.assetCollectorOrg.example.com/msp:/etc/hyperledger/fabric/msp
@@ -116,7 +116,7 @@ services:
       - CORE_PEER_ADDRESS=peer0.assetProviderOrg.example.com:7051
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.assetProviderOrg.example.com:7051
       - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.assetProviderOrg.example.com:7051
-      - CORE_PEER_LOCALMSPID=assetProviderOrgMSP
+      - CORE_PEER_LOCALMSPID=AssetProviderOrgMSP
     volumes:
         - /var/run/:/host/var/run/
         - ../crypto-config/peerOrganizations/assetProviderOrg.example.com/peers/peer0.assetProviderOrg.example.com/msp:/etc/hyperledger/fabric/msp
@@ -135,7 +135,7 @@ services:
       - CORE_PEER_ADDRESS=peer1.assetProviderOrg.example.com:7051
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.assetProviderOrg.example.com:7051
       - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.assetProviderOrg.example.com:7051
-      - CORE_PEER_LOCALMSPID=assetProviderOrgMSP
+      - CORE_PEER_LOCALMSPID=AssetProviderOrgMSP
     volumes:
         - /var/run/:/host/var/run/
         - ../crypto-config/peerOrganizations/assetProviderOrg.example.com/peers/peer1.assetProviderOrg.example.com/msp:/etc/hyperledger/fabric/msp

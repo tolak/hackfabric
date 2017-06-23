@@ -59,7 +59,7 @@ services:
       - CORE_LOGGING_LEVEL=DEBUG
       - CORE_PEER_ID=cli
       - CORE_PEER_ADDRESS=peer0.assetManagerOrg.example.com:7051
-      - CORE_PEER_LOCALMSPID=assetManagerOrgMSP
+      - CORE_PEER_LOCALMSPID=AssetManagerOrgMSP
       - CORE_PEER_TLS_ENABLED=true
       - CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/assetManagerOrg.example.com/peers/peer0.assetManagerOrg.example.com/tls/server.crt
       - CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/assetManagerOrg.example.com/peers/peer0.assetManagerOrg.example.com/tls/server.key
