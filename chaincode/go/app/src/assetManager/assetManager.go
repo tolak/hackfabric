@@ -73,7 +73,7 @@ func (t *assetManagerChaincode) deleteUserAsset(stub shim.ChaincodeStubInterface
 		return shim.Error("Incorrect number of arguments. Expecting 1")
 	}
 
-	err = stub.DeleState(args[0])
+	err = stub.DelState(args[0])
 	if err != nil{
 		return shim.Error("Failed to delete user: " + err.Error())
 	}
