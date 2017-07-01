@@ -125,9 +125,9 @@ instantiateChaincode () {
 	# while 'peer chaincode' command can get the orderer endpoint from the peer (if join was successful),
 	# lets supply it directly as we know it using the "-o" option
 	if [ -z "$CORE_PEER_TLS_ENABLED" -o "$CORE_PEER_TLS_ENABLED" = "false" ]; then
-		peer chaincode instantiate -o orderer.example.com:7050 -C $CHANNEL_NAME -n $ccname -v 1.0 -c $ccorgs -P "OR	('AssetManagerOrg.member','AssetProviderOrg.member','AssetProviderOrg.member')" >>log.txt 2>&1
+		peer chaincode instantiate -o orderer.example.com:7050 -C $CHANNEL_NAME -n $ccname -v 1.0 -c '{"Args":["init", "public", "0"]}' -P "OR	('AssetManagerOrgMSP.member','AssetCollectorOrgMSP.member','AssetProviderOrgMSP.member')" >>log.txt 2>&1
 	else
-		peer chaincode instantiate -o orderer.example.com:7050 --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n $ccname -v 1.0 -c $ccorgs -P "OR	('AssetManagerOrg.member','AssetCollectorOrg.member','AssetProviderOrg.member')" >>log.txt 2>&1
+		peer chaincode instantiate -o orderer.example.com:7050 --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n $ccname -v 1.0 -c '{"Args":["init", "public", "0"]}' -P "OR	('AssetManagerOrgMSP.member','AssetCollectorOrgMSP.member','AssetProviderOrgMSP.member')" >>log.txt 2>&1
 	fi
 	res=$?
 	cat log.txt
@@ -207,16 +207,16 @@ updateAnchorPeers "assetProviderOrg" "peer0"
 
 ## Install chaincode on peer1 within all Org in the channel
 #echo "Install chaincode on specific peer..." >>log.txt 2>&1
-#installChaincode "assetManagerOrg" "peer0" "peer0-assetmanager-cc" "github.com/hyperledger/fabric/examples/chaincode/go/app/src/assetManager"
+installChaincode "assetManagerOrg" "peer0" "peer0-assetmanager-cc" "github.com/hyperledger/fabric/examples/chaincode/go/app/src/assetManager"
 #installChaincode "assetCollectorOrg" "peer0" "peer0-assetcollector-cc" "github.com/hyperledger/fabric/examples/chaincode/go/app/src/assetCollector"
 #installChaincode "assetProviderOrg" "peer0" "peer0-assetprovider-cc" "github.com/hyperledger/fabric/examples/chaincode/go/app/src/assetProvider"
 
 
 #Instantiate chaincode on Peer1 within all Org in the channel
 #echo "Instantiate chaincode on specific peer..." >>log.txt 2>&1
-#instantiateChaincode "assetManagerOrg" "peer0" "peer0-assetmanager-cc" '{"Args":["init", "null"]}'
-#instantiateChaincode "assetCollectorOrg" "peer0" "peer0-assetcollector-cc" '{"Args":["init", "null"]}'
-#instantiateChaincode "assetProviderOrg" "peer0" "peer0-assetprovider-cc" '{"Args":["init", "null"]}'
+instantiateChaincode "assetManagerOrg" "peer0" "peer0-assetmanager-cc"
+#instantiateChaincode "assetCollectorOrg" "peer0" "peer0-assetcollector-cc"
+#instantiateChaincode "assetProviderOrg" "peer0" "peer0-assetprovider-cc"
 
 echo
 echo "===================== All GOOD, AssetAtom config completed ===================== " >>log.txt 2>&1
