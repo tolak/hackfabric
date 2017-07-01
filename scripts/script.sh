@@ -206,17 +206,17 @@ updateAnchorPeers "assetCollectorOrg" "peer0"
 updateAnchorPeers "assetProviderOrg" "peer0"
 
 ## Install chaincode on peer1 within all Org in the channel
-echo "Install chaincode on specific peer..." >>log.txt 2>&1
-installChaincode "assetManagerOrg" "peer0" "peer0-assetmanager-cc" "github.com/hyperledger/fabric/examples/chaincode/go/app/src/assetManager"
-installChaincode "assetCollectorOrg" "peer0" "peer0-assetcollector-cc" "github.com/hyperledger/fabric/examples/chaincode/go/app/src/assetCollector"
-installChaincode "assetProviderOrg" "peer0" "peer0-assetprovider-cc" "github.com/hyperledger/fabric/examples/chaincode/go/app/src/assetProvider"
+#echo "Install chaincode on specific peer..." >>log.txt 2>&1
+#installChaincode "assetManagerOrg" "peer0" "peer0-assetmanager-cc" "github.com/hyperledger/fabric/examples/chaincode/go/app/src/assetManager"
+#installChaincode "assetCollectorOrg" "peer0" "peer0-assetcollector-cc" "github.com/hyperledger/fabric/examples/chaincode/go/app/src/assetCollector"
+#installChaincode "assetProviderOrg" "peer0" "peer0-assetprovider-cc" "github.com/hyperledger/fabric/examples/chaincode/go/app/src/assetProvider"
 
 
 #Instantiate chaincode on Peer1 within all Org in the channel
-echo "Instantiate chaincode on specific peer..." >>log.txt 2>&1
-instantiateChaincode "assetManagerOrg" "peer0" "peer0-assetmanager-cc" '{"Args":["init", ""]}'
-instantiateChaincode "assetCollectorOrg" "peer0" "peer0-assetcollector-cc" '{"Args":["init", ""]}'
-instantiateChaincode "assetProviderOrg" "peer0" "peer0-assetprovider-cc" '{"Args":["init", ""]}'
+#echo "Instantiate chaincode on specific peer..." >>log.txt 2>&1
+#instantiateChaincode "assetManagerOrg" "peer0" "peer0-assetmanager-cc" '{"Args":["init", "null"]}'
+#instantiateChaincode "assetCollectorOrg" "peer0" "peer0-assetcollector-cc" '{"Args":["init", "null"]}'
+#instantiateChaincode "assetProviderOrg" "peer0" "peer0-assetprovider-cc" '{"Args":["init", "null"]}'
 
 echo
 echo "===================== All GOOD, AssetAtom config completed ===================== " >>log.txt 2>&1
